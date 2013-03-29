@@ -1,3 +1,10 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+#---
+# Author : Romain GEORGES
+# type : Rspec 
+# obj : Dorsal Spec
+#---
 require 'dorsal'
 require './spec/samples/dummy'
 
@@ -35,8 +42,8 @@ describe "Dorsal" do
       context "#start_ring_server" do
         it { should respond_to :start_ring_server }
         it { subject.start_ring_server.should be_an_instance_of Fixnum }
-        it "should raise ServerError if try to start twice" do
-          lambda { subject.start_ring_server }.should raise_error Dorsal::RingServerError
+        it "should return false if try to start twice" do
+          subject.start_ring_server.should be_false
         end
         it "should exist an instance process of the Ring server" do 
           pid = `ps aux|grep ruby|grep -v grep |grep 'Dorsal Ring Server'|awk '{ print $2}'`.chomp
@@ -83,7 +90,7 @@ describe "Dorsal" do
             $ring.should respond_to :bind_to_service 
           end
           it "should bind the dummy service" do
-            $dummy = $ring.bind_to_service ({:name => 'dummy'})
+            $dummy = $ring.bind_to_service :name => 'dummy'
             $dummy.should be_an_instance_of DRb::DRbObject
             $dummy.test.should eq 'OK'
           end
