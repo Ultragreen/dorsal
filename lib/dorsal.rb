@@ -13,7 +13,7 @@ require 'dorsal/exceptions'
 require 'dorsal/implementation'
 require 'dorsal/controller'
 
-# module Carioca
+# module Dorsal
 # @author Romain GEORGES <romain@ultragreen.net>
 # @see http://www.ultragreen.net/projects/dorsal
 # @version (See Dorsal::VERSION)
@@ -37,8 +37,9 @@ module Dorsal
   
   # the default debug status
   DEFAULT_DEBUG = false
-end
 
+
+end
 
 
 

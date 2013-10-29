@@ -73,6 +73,7 @@ module Dorsal
         @data[options[:name]] = { :description => options[:description] , :pid_file => options[:pid_file], :uri => options[:uri] }
         return start(options) do
           require 'drb'
+          options[:object].extend DRb::DRbUndumped
           DRb.start_service(options[:uri], options[:object])
           DRb.thread.join
         end
