@@ -8,6 +8,16 @@
 require 'dorsal'
 require './spec/samples/dummy'
 
+RSpec.configure do |config|
+  config.expect_with :rspec do |c|
+    c.syntax = :should
+  end
+  config.mock_with :rspec do |c|
+    c.syntax = :should
+  end
+end
+
+
 describe "Dorsal" do
   before :all do
     File::unlink('/tmp/dorsal_ringserver.pid') if File::exist?('/tmp/dorsal_ringserver.pid')
@@ -43,7 +53,7 @@ describe "Dorsal" do
         it { should respond_to :start_ring_server }
         it { subject.start_ring_server.should be_an_instance_of Fixnum }
         it "should return false if try to start twice" do
-          subject.start_ring_server.should be_false
+          subject.start_ring_server.should be false
         end
         it "should exist an instance process of the Ring server" do 
           pid = `ps aux|grep ruby|grep -v grep |grep 'Dorsal Ring Server'|awk '{ print $2}'`.chomp
@@ -65,7 +75,7 @@ describe "Dorsal" do
             $ring.should respond_to :start_service 
           end
           it "should start a service" do 
-            $ring.start_service({ :name => 'dummy', :object => Dummy::new, :description => 'A dummy distributed service' }).should  be_true
+            $ring.start_service({ :name => 'dummy', :object => Dummy::new, :description => 'A dummy distributed service' }).should  > 0
           end
           it "should exist an instance process of dummy service" do 
             pid = `ps aux|grep ruby|grep -v grep |grep 'A dummy distributed service'|awk '{ print $2}'`.chomp
@@ -84,7 +94,7 @@ describe "Dorsal" do
             $ring.list_services['dummy'][:uri].should =~  /druby:\/\/localhost:\d+/
           end
           it "should exist pid_file : /tmp/dorsal/service-dummy.pid" do
-            File::exist?('/tmp/dorsal/service-dummy.pid').should be_true
+            File::exist?('/tmp/dorsal/service-dummy.pid').should be true
           end
           it "should ring server respond to bind_to_service" do
             $ring.should respond_to :bind_to_service 
@@ -111,7 +121,7 @@ describe "Dorsal" do
             
           end
           it "should not exist pid_file : /tmp/dorsal/service-dummy.pid" do
-            File::exist?('/tmp/dorsal/service-dummy.pid').should be_false
+            File::exist?('/tmp/dorsal/service-dummy.pid').should be false
           end
 
           it "should return false if trying to stop again the dummy_service" do
@@ -124,13 +134,13 @@ describe "Dorsal" do
       context "#ring_server_status(running)" do
         it { should respond_to :ring_server_status }
         it "should respond true" do
-          subject.ring_server_status.should be_true
+          subject.ring_server_status.should be true
         end
       end
       
       context "#stop_ring_server" do
         it "should re-start a service dummy for testing auto_destroy when stop Ring Server" do 
-          $ring.start_service({ :name => 'dummy', :object => Dummy::new, :description => 'A dummy distributed service' }).should  be_true
+          $ring.start_service({ :name => 'dummy', :object => Dummy::new, :description => 'A dummy distributed service' }).should  > 0
         end
         it { should respond_to :stop_ring_server }
         it { subject.stop_ring_server.should eq true }
@@ -143,13 +153,13 @@ describe "Dorsal" do
           pid.should be_empty
         end
         it "should not exist pid_file : /tmp/dorsal/service-dummy.pid" do
-          File::exist?('/tmp/dorsal/service-dummy.pid').should be_false
+          File::exist?('/tmp/dorsal/service-dummy.pid').should be false
         end
        end
 
       context "#ring_server_status(shutdown)" do
         it "should respond false" do
-          subject.ring_server_status.should be_false
+          subject.ring_server_status.should be false
         end
       end
 

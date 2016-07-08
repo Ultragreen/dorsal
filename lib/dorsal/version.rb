@@ -10,5 +10,5 @@
 module Dorsal
 
   # global version of Dorsal
-  VERSION = "1.0"
+  VERSION = "1.1"
 end
