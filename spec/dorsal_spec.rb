@@ -15,12 +15,19 @@ RSpec.configure do |config|
   config.mock_with :rspec do |c|
     c.syntax = :should
   end
+
+  if $stdout.isatty then
+    config.color = true
+    config.tty = true
+  end
+  config.formatter = :documentation # :progress, :html, :textmate
 end
+
 
 
 describe "Dorsal" do
   before :all do
-    File::unlink('/tmp/dorsal_ringserver.pid') if File::exist?('/tmp/dorsal_ringserver.pid')
+    File::unlink('/tmp/dorsal/ringserver.pid') if File::exist?('/tmp/dorsal/ringserver.pid')
     pid = `ps aux|grep ruby|grep -v grep |grep 'Dorsal Ring Server'|awk '{ print $2}'`
     unless pid.empty? then
       res = `kill -TERM #{pid.chomp}`

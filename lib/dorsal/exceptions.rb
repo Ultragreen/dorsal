@@ -9,5 +9,5 @@
 # the Dorsal Namespace
 module Dorsal
   # Exception class override from servers errors
-  class ServerError < Exception; end
+  class RingServerError < Exception; end
 end
