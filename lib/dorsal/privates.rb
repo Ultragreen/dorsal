@@ -143,7 +143,7 @@ module Dorsal
       options.specify_presences_of :description, :pid_file
       options.validate
       File::unlink(options[:pid_file]) if File::exist?(options[:pid_file])
-      pid = `COLUMNS=160 ps aux|grep ruby|grep -v grep |grep '#{options[:description]}'|awk '{ print $2}'`
+      pid = `COLUMNS=160 ps aux|grep -v grep |grep '#{options[:description]}'|awk '{ print $2}'`
       if pid.empty? then
         return false
       else

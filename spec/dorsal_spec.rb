@@ -28,7 +28,7 @@ end
 describe "Dorsal" do
   before :all do
     File::unlink('/tmp/dorsal/ringserver.pid') if File::exist?('/tmp/dorsal/ringserver.pid')
-    pid = `ps aux|grep ruby|grep -v grep |grep 'Dorsal Ring Server'|awk '{ print $2}'`
+    pid = `ps aux|grep -v grep |grep 'Dorsal Ring Server'|awk '{ print $2}'`
     unless pid.empty? then
       res = `kill -TERM #{pid.chomp}`
     end
@@ -72,7 +72,7 @@ describe "Dorsal" do
       
       context "#bind_to_ring_server" do
         it { should respond_to :bind_to_ring }
-        it "should be possible to bing distributed Ring Server" do
+        it "should be possible to bind distributed Ring Server" do
           $ring = subject.bind_to_ring
         end
         context "Ring server Instance" do
