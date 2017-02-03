@@ -60,10 +60,11 @@ describe "Dorsal" do
         it { should respond_to :start_ring_server }
         it { subject.start_ring_server.should be_an_instance_of Fixnum }
         it "should return false if try to start twice" do
+#          lambda { subject.start_ring_server}.should raise_error Dorsal::RingServerError
           subject.start_ring_server.should be false
         end
         it "should exist an instance process of the Ring server" do 
-          pid = `ps aux|grep ruby|grep -v grep |grep 'Dorsal Ring Server'|awk '{ print $2}'`.chomp
+          pid = `ps aux|grep -v grep |grep 'Dorsal Ring Server'|awk '{ print $2}'`.chomp
           pid.should_not be_empty
         end
         

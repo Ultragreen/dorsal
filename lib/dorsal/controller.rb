@@ -72,7 +72,7 @@ module Dorsal
     def bind_to_ring
       if ring_server_status then
         DRb.start_service
-        return DRbObject.new nil, @options[:uri]
+        return DRbObject.new_with_uri @options[:uri]
       else
         return nil
       end

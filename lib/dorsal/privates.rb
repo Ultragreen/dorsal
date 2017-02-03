@@ -120,7 +120,7 @@ module Dorsal
       options.specify_presences_of :description, :pid_file
       options.validate
       raise Dorsal::RingServerError::new('already running, pid file exist') if File::exist?(options[:pid_file])
-      raise Dorsal::RingServerError::new('already running') unless `ps aux|grep ruby|grep -v grep |grep '#{options[:description]}'`.empty?
+      raise Dorsal::RingServerError::new('already running, process found') unless `ps aux|grep -v grep |grep '#{options[:description]}'`.empty?
       return daemonize(options) do
         yield
       end
@@ -171,7 +171,7 @@ module Dorsal
       options = Methodic::get_options(_options)
       options.specify_presences_of :description, :pid_file
       options.validate
-      pid = `COLUMNS=160 ps aux|grep ruby|grep -v grep |grep '#{options[:description]}'|awk '{ print $2}'`
+      pid = `COLUMNS=160 ps aux|grep -v grep |grep '#{options[:description]}'|awk '{ print $2}'`
       if pid.empty? then
         return false
       else
