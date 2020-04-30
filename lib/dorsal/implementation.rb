@@ -10,20 +10,20 @@ require 'dorsal/privates'
 
 # the dorsal namespace
 module Dorsal
-  
+
   # the Ring Server DRbObject Implementation
   # @note should NOT be instantiate
-  # @note this classe is made to be instantiate as a ring server 
+  # @note this classe is made to be instantiate as a ring server
   # @private
   class ImplementationServer
-    
+
     include DRbUndumped
     include Dorsal::Privates
-    
+
     # @attr_reader [Hash] data the internal Hash of the ring server
     # @note for debug only
     attr_reader :data
-    
+
     # the contructor of the Ring Server
     # @param [Hash] _options the params of the constructor, keys must be symbols
     # @note :description (default) 'Dorsal::DEFAULT_RINGSERVER_DESCRIPTION'
@@ -32,10 +32,10 @@ module Dorsal
     # @note :port (default) 'Dorsal::DEFAULT_PORT'
     # @note :dir (default) 'Dorsal::DEFAULT_DIR'
     # @note :name (default) 'Dorsal::DEFAULT_RINGSERVER_NAME'
-    # @note :uri rule 'druby://(:host):(:port)'                                                                                                                                  
-    # @note :pid_file rule '(:dir)/(:name).pid' 
-    # @option _options [String] :description the description of ring server 
-    # @option _options [TrueClass,FalseClass] :debug the deubg mode  
+    # @note :uri rule 'druby://(:host):(:port)'
+    # @note :pid_file rule '(:dir)/(:name).pid'
+    # @option _options [String] :description the description of ring server
+    # @option _options [TrueClass,FalseClass] :debug the deubg mode
     # @option _options [String] :host the host for ring server and services
     # @option _options [String] :port the port for the ring server
     # @option _options [String] :dir the writable path for pids files
@@ -58,8 +58,8 @@ module Dorsal
     # @return [Fixnum,FalseClass] the pid of the process who host the DRb service, false if already started
     # @param [Hash] _options the params of the constructor, keys must be symbols
     # @option _options [String] :name the name of the service
-    # @option _options [String] :description the long name of the service, use for $0 
-    # @option _options [Object] :object an object to be served by DRb 
+    # @option _options [String] :description the long name of the service, use for $0
+    # @option _options [Object] :object an object to be served by DRb
     # @note access by Dorsal::Controller::new.bind_to_ring.start_service
     # @example usage
     #   Dorsal::Controller::new.bind_to_ring.start_service :name => 'service', :description => 'a service', :object => MyService::new
@@ -79,10 +79,10 @@ module Dorsal
         end
       else
         return false
-      end 
+      end
     end
-    
-    # stop a service in the ring 
+
+    # stop a service in the ring
     # @return [TrueClass,FalseClass] true if really stop, false if already down
     # @param [Hash] _options the params of the constructor, keys must be symbols
     # @option _options [String] :name the name of the service
@@ -97,7 +97,7 @@ module Dorsal
         options[:pid_file] = @data[options[:name]][:pid_file]
         options[:description] = @data[options[:name]][:description]
         if stop(options) then
-          @data.delete(options[:name])  
+          @data.delete(options[:name])
           return true
         end
         return false
@@ -146,6 +146,6 @@ module Dorsal
       end
       return false
     end
-    
+
   end
 end

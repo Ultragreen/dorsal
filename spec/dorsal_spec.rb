@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #---
 # Author : Romain GEORGES
-# type : Rspec 
+# type : Rspec
 # obj : Dorsal Spec
 #---
 require 'dorsal'
@@ -39,7 +39,7 @@ describe "Dorsal" do
   it { should be_an_instance_of Module}
   context "Dorsal::Controller" do
     subject { $controller }
-    it { should be_an_instance_of Dorsal::Controller } 
+    it { should be_an_instance_of Dorsal::Controller }
     context "#initialize" do
 
     end
@@ -63,34 +63,35 @@ describe "Dorsal" do
 #          lambda { subject.start_ring_server}.should raise_error Dorsal::RingServerError
           subject.start_ring_server.should be false
         end
-        it "should exist an instance process of the Ring server" do 
+        it "should exist an instance process of the Ring server" do
           pid = `ps aux|grep -v grep |grep 'Dorsal Ring Server'|awk '{ print $2}'`.chomp
           pid.should_not be_empty
         end
-        
+
       end
-      
+
       context "#bind_to_ring_server" do
         it { should respond_to :bind_to_ring }
         it "should be possible to bind distributed Ring Server" do
           $ring = subject.bind_to_ring
         end
         context "Ring server Instance" do
-          it "should be an Instance of DRb::DRbObject" do 
+          it "should be an Instance of DRb::DRbObject" do
             $ring.should be_an_instance_of DRb::DRbObject
           end
           it "should Ring server respond to start_service" do
-            $ring.should respond_to :start_service 
+            $ring.should respond_to :start_service
           end
-          it "should start a service" do 
+          it "should start a service" do
             $ring.start_service({ :name => 'dummy', :object => Dummy::new, :description => 'A dummy distributed service' }).should  > 0
+
           end
-          it "should exist an instance process of dummy service" do 
-            pid = `ps aux|grep ruby|grep -v grep |grep 'A dummy distributed service'|awk '{ print $2}'`.chomp
+          it "should exist an instance process of dummy service" do
+            pid = `ps aux|grep -v grep |grep 'A dummy distributed service'|awk '{ print $2}'`.chomp
             pid.should_not be_empty
           end
           it "should Ring server respond to list_services" do
-            $ring.should respond_to :list_services 
+            $ring.should respond_to :list_services
           end
           it "should list_services return a Hash" do
             $ring.list_services.should be_an_instance_of Hash
@@ -105,7 +106,7 @@ describe "Dorsal" do
             File::exist?('/tmp/dorsal/service-dummy.pid').should be true
           end
           it "should ring server respond to bind_to_service" do
-            $ring.should respond_to :bind_to_service 
+            $ring.should respond_to :bind_to_service
           end
           it "should bind the dummy service" do
             $dummy = $ring.bind_to_service :name => 'dummy'
@@ -113,20 +114,20 @@ describe "Dorsal" do
             $dummy.test.should eq 'OK'
           end
           it "should have a running daemon instance of the service dummy" do
-            pid = `ps aux|grep ruby|grep -v grep |grep 'A dummy distributed service'|awk '{ print $2}'`.chomp
+            pid = `ps aux|grep -v grep |grep 'A dummy distributed service'|awk '{ print $2}'`.chomp
             pid.should_not be_empty
           end
 
           it "should ring server respond to destroy_service" do
-            $ring.should respond_to :destroy_service 
-            
+            $ring.should respond_to :destroy_service
+
           end
-         
+
           it "should be possible to stop the dummy_service" do
             res = $ring.destroy_service({ :name => 'dummy'})
             res.should be true
             $ring.list_services.should be_empty
-            
+
           end
           it "should not exist pid_file : /tmp/dorsal/service-dummy.pid" do
             File::exist?('/tmp/dorsal/service-dummy.pid').should be false
@@ -145,18 +146,18 @@ describe "Dorsal" do
           subject.ring_server_status.should be true
         end
       end
-      
+
       context "#stop_ring_server" do
-        it "should re-start a service dummy for testing auto_destroy when stop Ring Server" do 
+        it "should re-start a service dummy for testing auto_destroy when stop Ring Server" do
           $ring.start_service({ :name => 'dummy', :object => Dummy::new, :description => 'A dummy distributed service' }).should  > 0
         end
         it { should respond_to :stop_ring_server }
         it { subject.stop_ring_server.should eq true }
-        it "should no longer exist an instance process of the Ring server" do 
+        it "should no longer exist an instance process of the Ring server" do
           pid = `ps aux|grep ruby|grep -v grep |grep 'Dorsal Ring Server'|awk '{ print $2}'`.chomp
           pid.should be_empty
         end
-        it "should not exist an instance process of dummy service" do 
+        it "should not exist an instance process of dummy service" do
           pid = `ps aux|grep ruby|grep -v grep |grep 'A dummy distributed service'|awk '{ print $2}'`.chomp
           pid.should be_empty
         end

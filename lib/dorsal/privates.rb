@@ -61,9 +61,9 @@ module Dorsal
       options.validate
       return yield if options[:debug]
       pid = fork do 
-        trap("SIGINT"){ exit! 0 }
-        trap("SIGTERM"){ exit! 0 }
-        trap("SIGHUP"){ exit! 0 }
+        trap("SIGINT"){ eit! 0 }
+        trap("SIGTERM"){ eit! 0 }
+        trap("SIGHUP"){ eit! 0 }
         Process.daemon
         $0 = options[:description]
         yield
