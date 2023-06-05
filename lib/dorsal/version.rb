@@ -1,5 +1,6 @@
 # frozen_string_literal: true
+require 'version'
 
 module Dorsal
-  VERSION = "0.1.0"
+  VERSION = Version.current
 end

@@ -1,0 +1,90 @@
+require "thor"
+require 'method_source'
+require 'json'
+require 'rest-client'
+
+require 'dorsal'
+
+class Daemon < Sinatra::Base
+  extend Carioca::Injector
+  inject service: :logger
+  configure do
+    use Rack::CommonLogger, logger
+  end
+  post '/proxy/:service' do |service|
+     data = JSON.parse(request.body.read, symbolize_names: true)
+     ServicesDaemon.instance.response service: service, call: data[:call], token: data[:token]
+  end
+end
+
+class ProxyService
+  def initialize(service:, token: "sdqsqdsqdsqd")
+    @token = token
+    @service = service
+  end
+
+  def method_missing(m, *args, **keywords,&block)
+    code = nil 
+    if block_given?
+      prototype = block.source
+      if prototype =~ /^\s*\w+\s*=.*/ then 
+        code  = prototype.split("=").map(&:lstrip)
+        code.shift
+      else
+        code = [prototype]
+      end
+    end
+    request  = {token: @token, args: args, keywords: keywords}
+    p request
+    request[:proc] = code if code  
+    res =  ServiceClient.query service: @service,request: request.to_json, token: @token 
+    data = JSON.parse(res.body, symbolize_names: true)
+    if data[:output] then 
+      data[:output].each do |item|
+        target,*rest = item.split(":")
+        display  = rest.join(':')
+        Object.const_get(target).puts display 
+      end
+    end
+    return data[:returned]
+  end
+  
+end
+
+
+class ServiceClient
+
+  def self.query(service:, request:, token: )
+    puts request
+    exit
+    RestClient.post "http://localhost:4567/proxy/#{service}", request
+  end
+  
+  
+end
+
+
+
+
+class MyCLI < Thor
+
+  desc "client", "run client"
+  def client
+    val1 = "toto"; val2= {tutu: "tete"}
+      remote_logger = ::ProxyService::new service: :logger
+      totot = remote_logger.info(val1, val2, "test remote", keyword: "tiiti", keyword2: "tutu") do 
+         puts 'titi'
+       end
+  end
+
+  desc "server", "run server"
+  def server
+    Daemon.run!
+  end
+end
+
+MyCLI.start(ARGV) 
+
+
+
+
